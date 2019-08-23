@@ -17,10 +17,9 @@ const Header = ({ currentUser }) => {
         <Link className="option" to="/shop">
           CONTACT
         </Link>
-        {currentUser ? (
+        {currentUser ? ( // se currentUser != null -> existe -> faz sign out ------> else não existe -> faz sign in
           <div className="option" onClick={() => auth.signOut()}>
-            {" "}
-            {/*signout -> provided to us by the firebase auth library*/}
+            {/*signout -> method provided to us by the firebase auth library*/}
             Sign Out
           </div>
         ) : (
