@@ -2,6 +2,8 @@
 //!     - a state object which is just an object that represents what it is that we're trying to store
 //!     - an action that is just an object that has a type which is a string value, and has a payload that can be something to update the state
 
+import { UserActionTypes } from "./user.types";
+
 const INITIAL_STATE = {
   currentUser: null
 };
