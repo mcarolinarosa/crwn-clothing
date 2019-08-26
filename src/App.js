@@ -24,9 +24,29 @@ class App extends React.Component {
       //                                   ^ to know when firebase has realized that the autentication state has changed
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
+        userRef.onSnapshot(snapShot => {
+          this.setState(
+            {
+              currentUser: {
+                id: snapShot.id,
+                ...snapShot.data()
+              }
+            },
+            () => {
+              //<- fazer o console.log como parâmetro do setstate, porque setState é async, e desta forma, de certeza que o console.log é chamado depois do setstate ser executado
+              console.log(this.state);
+            }
+          );
+        });
+      } else {
+        this.setState({
+          currentUser: userAuth
+        });
       }
     });
   }
+
+  // documentrefernce -> documentReference.get -> documentSnapshot -> documentSnapshot.exists=>boolean->verifica se o doc existe ou não
 
   componentWillUnmount() {
     this.unsubscribeFromAuth();
