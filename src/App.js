@@ -20,23 +20,31 @@ import { selectCurrentUser } from "./redux/user/user.selectors";
 class App extends React.Component {
   unsubscribeFromAuth = null;
 
+  //This onAuthStateChanged() is an observable
+  //the function we passed in corresponds to the "next" -> whenever a value comes in we run the function that we pass to it
+  //the second function we paassed in corresponds to the "error"
+  //the "complete" rarely happens inside a firebase because firebaseis a live database
   componentDidMount() {
     const { setCurrentUser } = this.props;
-    //                                                        \/ this corresponds to the user state
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    //                                \/ this corresponds to the user state - "next" call
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(
       //                                   ^ to know when firebase has realized that the autentication state has changed
-      if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth);
-        userRef.onSnapshot(snapShot => {
-          setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data()
+      async userAuth => {
+        if (userAuth) {
+          const userRef = await createUserProfileDocument(userAuth);
+          userRef.onSnapshot(snapShot => {
+            setCurrentUser({
+              id: snapShot.id,
+              ...snapShot.data()
+            });
           });
-        });
-      } else {
-        setCurrentUser(userAuth);
-      }
-    });
+        } else {
+          setCurrentUser(userAuth);
+        }
+      },
+      //\/"error" call
+      error => console.log(error)
+    );
   }
 
   // documentrefernce -> documentReference.get -> documentSnapshot -> documentSnapshot.exists=>boolean->verifica se o doc existe ou não
