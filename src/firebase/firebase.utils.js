@@ -72,12 +72,21 @@ export const convertCollectionsSnapshotToMap = collections => {
 
 firebase.initializeApp(config);
 
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(userAuth => {
+      unsubscribe();
+      resolve(userAuth);
+    }, reject);
+  });
+};
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-const provider = new firebase.auth.GoogleAuthProvider(); //access to google auth provider class from the authentication library
-provider.setCustomParameters({ prompt: "select_account" }); //we want to always trigger the google pop up whenever we use this google auth provider for authentication and sign in
+export const googleProvider = new firebase.auth.GoogleAuthProvider(); //access to google auth provider class from the authentication library
+googleProvider.setCustomParameters({ prompt: "select_account" }); //we want to always trigger the google pop up whenever we use this google auth provider for authentication and sign in
 
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
 
 export default firebase;

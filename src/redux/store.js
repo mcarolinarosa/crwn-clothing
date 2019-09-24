@@ -1,12 +1,15 @@
 import { createStore, applyMiddleware } from "redux";
 import { persistStore } from "redux-persist";
 import logger from "redux-logger";
-import thunk from "redux-thunk";
+import createSagaMiddleware from "redux-saga";
+
+import rootSaga from "./root-saga";
 
 import rootReducer from "./root-reducer";
 
-//middleware is like a tunnal that intercepts our actions before they go into our reducer, and modify them or add things to them
-const middlewares = [thunk];
+const sagaMiddleware = createSagaMiddleware();
+
+const middlewares = [sagaMiddleware];
 
 // To display the log only on development mode
 if (process.env.NODE_ENV === "development") {
@@ -14,6 +17,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
+
+sagaMiddleware.run(rootSaga);
 
 export const persistor = persistStore(store);
 
